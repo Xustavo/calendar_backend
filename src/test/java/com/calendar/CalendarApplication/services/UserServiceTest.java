@@ -1,5 +1,6 @@
 package com.calendar.CalendarApplication.services;
 
+import com.calendar.CalendarApplication.dtos.user.UpdateUserDto;
 import com.calendar.CalendarApplication.dtos.user.UserDto;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.UserRepository;
@@ -90,10 +91,31 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser() {
+    @DisplayName("Should update user successfully")
+    void updateUserCase1() {
+        User existing = new User("Gustavo", "old@email.com", "123", LocalDate.parse("2024-07-21"));
+        existing.setId(1L);
+
+        UpdateUserDto dto = new UpdateUserDto((int) 1L, "NovoNome", "new@email.com", "novaSenha", LocalDate.parse("2024-07-21"));
+
+        when(userRepository.findById((int) 1L)).thenReturn(Optional.of(existing));
+        when(userRepository.existsByUsername("NovoNome")).thenReturn(false);
+        when(userRepository.existsByEmail("new@email.com")).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User result = userService.updateUser(dto);
+
+        assertEquals("NovoNome", result.getUsername());
+        assertEquals("new@email.com", result.getEmail());
     }
 
     @Test
-    void deleteUser() {
+    @DisplayName("Should throw exception when user not found")
+    void updateUserCase2() {
+        UpdateUserDto dto = new UpdateUserDto((int) 2L, "abc", "def", "123", LocalDate.parse("2024-07-21"));
+
+        when(userRepository.findById((int) 2L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> userService.updateUser(dto));
     }
 }
