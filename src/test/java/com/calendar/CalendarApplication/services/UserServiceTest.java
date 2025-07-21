@@ -64,12 +64,29 @@ class UserServiceTest {
         verify(userRepository, never()).save(any());
     }
 
+
     @Test
-    void getUser() {
+    @DisplayName("Should return token if authentication is valid")
+    void authenticateUserCase1() {
+        String password = "senha123";
+        User user = new User("Gustavo", "email@email.com", new BCryptPasswordEncoder().encode(password), LocalDate.parse("2024-07-21"));
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(jwtUtil.generateToken(user.getUsername())).thenReturn("fake-token");
+
+        String result = userService.authenticateUser(user.getEmail(), password);
+
+        assertEquals("fake-token", result);
     }
 
     @Test
-    void authenticateUser() {
+    @DisplayName("Should return null if authentication fails")
+    void authenticateUserCase2() {
+        when(userRepository.findByEmail("email@email.com")).thenReturn(Optional.empty());
+
+        String result = userService.authenticateUser("email@email.com", "senha");
+
+        assertNull(result);
     }
 
     @Test
