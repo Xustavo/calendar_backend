@@ -1,5 +1,6 @@
 package com.calendar.CalendarApplication.services;
 
+import com.calendar.CalendarApplication.entity.Event;
 import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.repository.NotificationRepository;
@@ -57,6 +58,33 @@ class NotificationServiceTest {
     }
 
     @Test
+    @DisplayName("Should create notification correctly")
     void newEventNotification() {
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("gustavo");
+
+        Event event = new Event();
+        event.setId(10L);
+        event.setTitle("Reunião Importante");
+
+        when(notificationRepository.save(any(Notification.class))).thenAnswer(invocation -> {
+            Notification toSave = invocation.getArgument(0);
+            toSave.setId(100L);
+            return toSave;
+        });
+
+        Notification result = notificationService.newEventNotification(user, event);
+
+        assertNotNull(result);
+        assertEquals("Seu evento Reunião Importante foi salvo com sucesso!", result.getTitle());
+        assertEquals("Seu evento Reunião Importante foi salvo com sucesso, notificaremos você quando estiver próximo da data!", result.getDescription());
+        assertEquals(user, result.getUser());
+        assertEquals(event, result.getEvent());
+        assertFalse(result.getHasSeen());
+        assertEquals(100L, result.getId());
+
+        verify(notificationRepository, times(1)).save(any(Notification.class));
     }
 }
