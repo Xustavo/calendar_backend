@@ -36,7 +36,7 @@ public class ScheduledTasks {
         processDueDateTask(1);
     }
 
-    private void processDueDateTask(int hoursAhead) {
+    void processDueDateTask(int hoursAhead) {
         logger.info("Verificando eventos para as próximas " + hoursAhead + " horas: " + dateFormat.format(new Date()));
 
         Date now = new Date();

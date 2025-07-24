@@ -8,7 +8,7 @@ public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     @Column(name = "title")
     private String title;
@@ -79,5 +79,9 @@ public class Notification {
 
     public void setHasSeen(boolean hasSeen) {
         this.hasSeen = hasSeen;
+    }
+
+    public void setId(long l) {
+        this.id = l;
     }
 }

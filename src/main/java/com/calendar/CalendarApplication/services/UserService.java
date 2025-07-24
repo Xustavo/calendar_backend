@@ -74,12 +74,14 @@ public class UserService implements UserServiceInterface {
 
         if (
                 !user.username().equals(userToUpdate.getUsername()) &&
-                !userRepository.existsByUsername(user.username())
+                        !userRepository.existsByUsername(user.username())
         ) {
             userToUpdate.setUsername(user.username());
-        } else if(
+        }
+
+        if (
                 !user.email().equals(userToUpdate.getEmail()) &&
-                !userRepository.existsByEmail(user.email())
+                        !userRepository.existsByEmail(user.email())
         ) {
             userToUpdate.setEmail(user.email());
         }

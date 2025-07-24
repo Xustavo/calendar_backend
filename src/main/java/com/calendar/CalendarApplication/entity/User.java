@@ -82,4 +82,8 @@ public class User {
     public int getId() {
         return id;
     }
+
+    public void setId(long l) {
+        this.id = (int) l;
+    }
 }

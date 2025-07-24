@@ -7,6 +7,7 @@ import com.calendar.CalendarApplication.entity.Notification;
 import com.calendar.CalendarApplication.entity.User;
 import com.calendar.CalendarApplication.interfaces.notification.NotificationServiceInterface;
 import com.calendar.CalendarApplication.repository.NotificationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,8 @@ public class NotificationService implements NotificationServiceInterface {
     };
 
     public Notification updateNotification(NotificationToUpdateDto notification){
-        var savedNotification = notificationRepository.findById(notification.id());
+        var savedNotification = notificationRepository.findById(notification.id())
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
 
         savedNotification.setTitle(notification.title());
         savedNotification.setDescription(notification.description());
